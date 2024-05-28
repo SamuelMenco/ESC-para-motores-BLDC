@@ -18,6 +18,28 @@ Se debe entender un motor BLDC como un conjunto se rotor y estator, en el que el
 
 En caso de no lograr leer los sensores Hall con el Arduino, seguramente será necesario acondicionar las señales con una resistencia Pull-up, la cual se ubicará entre la salida del sensor y la lectura del ardunino, conectándola directamente a 5V. 
 
+Es asimismo importante entender la combinación de señales necesaria para que los drivers seleccionados activen los MOSFETs correspondientes. 
+
+# Explicación del código
+
+El código que se encuentra en la sección de archivos, llamado control PWM 3, cuenta con todos los elementos necesarios para poder realizar la conmutación y controlar la velocidad de un motor BLDC. 
+
+El código se encuentra comentado, pero a continuación se explicarán las funciones principales: 
+
+ISR(ADC_vect): Función que se activa cada vez que se realiza una conversión del ADC, según lo establecido en el setup. Dada la frecuencia con la que se realizan estan interrupciones, se decide leer el estado de los sensores Hall y activar las fases correspondientes. Como es lógico, en esta función se realizan las conversiones del ADC al que se conecta el potenciometro de aceleración, en un rango de valores de 0 a 1023, se divide entre 4 para llegar a valores entre 0 y 255, que serán los valores de Duty Cycle del PDW a escribir. 
+
+getHalls(): En esta función se leen los pines del puerto D de Arduino, especificamente 5, 6 y 7, dependiendo de la combinación de estos sensores se decide el step, que corresponde a la etapa del ciclo electrico en la que nos encontramos, de acuerdo a la imagen de arriba. 
+
+WritePhases(): Función para activar los drivers conectados a cada mosfet de cada uno de los tres puentes trifásicos (ver videos para entender correctamente) 
+
+DecideState(): Dependiendo del Step decidido en getHalls. se activarán las fases correspondientes. 
+
+ISR(PCINT2_vect): 
+
+
+# Hardware: 
+
+
 
 
 
