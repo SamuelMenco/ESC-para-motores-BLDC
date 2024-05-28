@@ -26,7 +26,7 @@ El código que se encuentra en la sección de archivos, llamado control PWM 3, c
 
 El código se encuentra comentado, pero a continuación se explicarán las funciones principales: 
 
-ISR(ADC_vect): Función que se activa cada vez que se realiza una conversión del ADC, según lo establecido en el setup. Dada la frecuencia con la que se realizan estan interrupciones, se decide leer el estado de los sensores Hall y activar las fases correspondientes. Como es lógico, en esta función se realizan las conversiones del ADC al que se conecta el potenciometro de aceleración, en un rango de valores de 0 a 1023, se divide entre 4 para llegar a valores entre 0 y 255, que serán los valores de Duty Cycle del PDW a escribir. 
+**ISR(ADC_vect)**: Función que se activa cada vez que se realiza una conversión del ADC, según lo establecido en el setup. Dada la frecuencia con la que se realizan estan interrupciones, se decide leer el estado de los sensores Hall y activar las fases correspondientes. Como es lógico, en esta función se realizan las conversiones del ADC al que se conecta el potenciometro de aceleración, en un rango de valores de 0 a 1023, se divide entre 4 para llegar a valores entre 0 y 255, que serán los valores de Duty Cycle del PDW a escribir. 
 
 **getHalls()**: En esta función se leen los pines del puerto D de Arduino, especificamente 5, 6 y 7, dependiendo de la combinación de estos sensores se decide el step, que corresponde a la etapa del ciclo electrico en la que nos encontramos, de acuerdo a la imagen de arriba. 
 
@@ -36,8 +36,22 @@ ISR(ADC_vect): Función que se activa cada vez que se realiza una conversión de
 
 **ISR(PCINT2_vect)**: Este vector de interrupción se activará cada vez que un sensor Hall cambie de estado. En este caso no se está utilizando, pero se puede utilizar, por ejemplo, para imprimir el estado de los sensores y la fase actual
 
+Una recomendación para evitar cortocircuitos, es buscar la forma de implementar un DEADTIME entre la activación de fases, de modo que no se activen dos MOSFETs al mismo tiempo. 
 
-# Hardware: 
+
+# Hardware:
+
+![image](https://github.com/SamuelMenco/ESC-para-motores-BLDC/assets/160543787/41b9e3c2-db8e-41bf-88c3-974d853d1231)
+
+La combinación de señales para el driver seleccionado se presenta a continuación: 
+
+![image](https://github.com/SamuelMenco/ESC-para-motores-BLDC/assets/160543787/53a7581c-e362-4c49-a667-941e200db08c)
+
+Esto debe corresponder con la combinación programada en el arduino, especificamente en la función **DecideState()** 
+
+Las ventajas que ofrecen estos componentes se relacionan con su confiabilidad. Los Mosfets utilizados (IRFS3107) soporta una corriente pico de 900A y 250A en estado estable. Por su parte, toda la lógica de control se encuentra programada en el arduino, que se puede reemplazar por cualquier otro microcontrolador con mejores prestaciones. En su defecto, se puede reemplazar el micro con un ciruito integrado dedicado como el MC33035 
+
+
 
 
 
