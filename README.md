@@ -137,21 +137,25 @@ message: Mensaje a enviar.
 2.	GPS: Inicializa la comunicación serial con el módulo GPS.
 3.	Pines: Configura los pines para los sensores Hall y los sensores de corriente y voltaje.
 4.	Interrupciones:
-  •	Timer1: Configura una interrupción que se activa cada milisegundo para contar el tiempo.
-  •	Sensor Hall Motor: Configura una interrupción en el pin 2 para contar los pulsos del sensor Hall del motor.
-  •	Sensor Hall Llanta: Configura una interrupción en el pin 3 para contar los pulsos del sensor Hall de la llanta.
-5.	LoRa: Inicializa el módulo LoRa y verifica su correcto funcionamiento.
+Timer1: Configura una interrupción que se activa cada milisegundo para contar el tiempo.
+
+Sensor Hall Motor: Configura una interrupción en el pin 2 para contar los pulsos del sensor Hall del motor.
+
+Sensor Hall Llanta: Configura una interrupción en el pin 3 para contar los pulsos del sensor Hall de la llanta.
+
+6.	LoRa: Inicializa el módulo LoRa y verifica su correcto funcionamiento.
    
 **Bucle Principal (loop)**
 1.	Medición de Corriente y Voltaje:
-  •	Llama a las funciones get_corriente() y get_voltaje() para obtener las lecturas promedio de corriente y voltaje.
+Llama a las funciones get_corriente() y get_voltaje() para obtener las lecturas promedio de corriente y voltaje.
 
 2.	Datos GPS:
-  •	Actualiza los datos del GPS si hay datos disponibles.
+Actualiza los datos del GPS si hay datos disponibles.
 
 3.	Transmisión de Datos:
-  •	Si hay nuevos datos de RPM del motor (newdata_motor), crea un mensaje con todos los datos y lo envía a través de LoRa.
-  •	Si no hay nuevos datos, envía un mensaje con las RPM del motor y la llanta como 0.
+Si hay nuevos datos de RPM del motor (newdata_motor), crea un mensaje con todos los datos y lo envía a través de LoRa.
+
+Si no hay nuevos datos, envía un mensaje con las RPM del motor y la llanta como 0.
 
 **Interrupciones**
   •	ISR(TIMER1_COMPA_vect): Incrementa el contador mseg cada milisegundo.
