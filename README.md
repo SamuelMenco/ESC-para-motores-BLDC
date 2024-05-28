@@ -112,20 +112,25 @@ Variables Globales
   •	mseg, t_stamp, pulsos, t_0, periodo, RPM_motor: Para medir las RPM del motor.
   •	delta_t_llanta, t0_llanta, rpm_llanta, pulsos_llanta: Para medir las RPM de la llanta.
   
-•	Flags:
-  •	newdata_motor, newdata_llanta: Indican si hay nuevos datos de RPM disponibles.
+•	Flags:newdata_motor, newdata_llanta: Indican si hay nuevos datos de RPM disponibles.
   
 •	GPS:
-  •	TinyGPS gps: Objeto para manejar datos GPS.
+
+TinyGPS gps: Objeto para manejar datos GPS.
   
-•	SoftwareSerial ss: Comunicación serial con el módulo GPS.
-  •	latitude, longitude, speed_kmh: Datos del GPS.
+SoftwareSerial ss: Comunicación serial con el módulo GPS.
+
+latitude, longitude, speed_kmh: Datos del GPS.
   
 •	Sensores:
-  •	I, V, voltajeSensor, Sensibilidad: Variables para medir corriente y voltaje.
+
+I, V, voltajeSensor, Sensibilidad: Variables para medir corriente y voltaje.
+
 •	LoRa:
-  •	BAND: Frecuencia de operación de LoRa.
-  •	message: Mensaje a enviar.
+
+BAND: Frecuencia de operación de LoRa.
+
+message: Mensaje a enviar.
   
 **Configuración Inicial (setup)**
 1.	Serial: Inicializa la comunicación serial a 9600 bps para depuración.
