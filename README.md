@@ -71,7 +71,7 @@ Esto debe corresponder con la combinación programada en el arduino, especificam
 Las ventajas que ofrecen estos componentes se relacionan con su confiabilidad. Los Mosfets utilizados (IRFS3107) soporta una corriente pico de 900A y 250A en estado estable. Por su parte, toda la lógica de control se encuentra programada en el arduino, que se puede reemplazar por cualquier otro microcontrolador con mejores prestaciones. En su defecto, se puede reemplazar el micro con un ciruito integrado dedicado como el MC33035 
 
 
-#Telemetría
+# Telemetría
 
 
 
