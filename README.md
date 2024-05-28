@@ -1,4 +1,4 @@
-# Electronic Speed Controller para motores Brushless DC
+# Electronic Speed Controller para motores Brushless DC:
 Sistema de control de velocidad electrónico para motores Brushless Dc con sensores Hall integrados, basado en Arduino y de código abierto. 
 Para entender el funcionamiento de un motor BLDC, así como el de un ESC, se recomienda ver los siguientes videos: 
 
@@ -20,7 +20,19 @@ En caso de no lograr leer los sensores Hall con el Arduino, seguramente será ne
 
 Es asimismo importante entender la combinación de señales necesaria para que los drivers seleccionados activen los MOSFETs correspondientes. 
 
-# Explicación del código
+# Especificaciones:
+
+*Voltaje de operación de 24V
+*Probado con corrientes de hasta 30A 
+*Diseñado para motores con sensores Hall, se identifican de manera automatica en el código 
+*Código abierto, con posibilidad de mejoras e implementaciones de controles más sofisticados, como lo puede ser un PI
+*Drivers L6387E
+*MOSFETs IRFS3107
+*Bajo costo
+*Basado en Arduino
+
+
+# Explicación del código:
 
 El código que se encuentra en la sección de archivos, llamado control PWM 3, cuenta con todos los elementos necesarios para poder realizar la conmutación y controlar la velocidad de un motor BLDC. 
 
