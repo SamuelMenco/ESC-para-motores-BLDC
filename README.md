@@ -23,12 +23,19 @@ Es asimismo importante entender la combinación de señales necesaria para que l
 # Especificaciones:
 
 *Voltaje de operación de 24V
+
 *Probado con corrientes de hasta 30A 
+
 *Diseñado para motores con sensores Hall, se identifican de manera automatica en el código 
+
 *Código abierto, con posibilidad de mejoras e implementaciones de controles más sofisticados, como lo puede ser un PI
+
 *Drivers L6387E
+
 *MOSFETs IRFS3107
+
 *Bajo costo
+
 *Basado en Arduino
 
 
