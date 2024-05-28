@@ -74,6 +74,140 @@ Las ventajas que ofrecen estos componentes se relacionan con su confiabilidad. L
 
 
 # Telemetría
+Telemetría con Arduino y LoRa
+Este proyecto permite medir y transmitir varios parámetros de telemetría como RPM del motor, RPM de la llanta, corriente, voltaje, y datos GPS utilizando un Arduino, sensores de corriente y voltaje, y un módulo de comunicación LoRa. Los datos se envían a través de LoRa a una estación base para su monitoreo y análisis. En la carpeta de “Esquemáticos” podrás encontrar las conexiones correspondientes.
+
+Se implementaron una serie de sensores para poder registrar parámetros importantes a la hora de hacer seguimiento al vehículo eléctrico. Para esto, se utilizó un Arduino Nano con el cual se recopilaron las señales correspondientes.
+
+**Componentes**:
+-	**Arduino Nano/Uno (x2)**: Microcontrolador para poder recopilar todas las señales provenientes de los sensores, para posteriormente ser enviadas al segundo Arduino mediante LoRa. Se utilizarán los puertos digitales y analógicos, para los últimos, se provee un tutorial para la tranformación de la señal del ADC.
+Video Tutorial: https://youtu.be/gAhQxGrUz8o?si=lVkVQKXAq5nB05s_ 
+
+-	**Sensor de Corriente ACS712 30A**: Para la medición de la corriente consumida por el vehículo.
+Link de Compra Amazon: https://www.amazon.com/Current-Voltage-DC0-25V-Terminal-Arduino/dp/B096XW328X Nota: Elegir el de amperaje adecuado para su aplicación.
+Video Tutorial: https://www.youtube.com/watch?v=hArTsILiBR8&ab_channel=MarioAlomoto
+
+-	**Divisor de Voltaje:** Para la medición del voltaje de la batería/fuente de poder. Este, debe estar calculado de tal manera en la que el voltaje que llegue a la lectura analógica del Arduino sea menor a 5V, pero no tan pequeña como para que se pierda precisión en la medida.
+Video Tutorial: https://youtu.be/DVWSOGCu_iA?si=zih63USFHZE2d8jD 
+
+-	**LoRa Ra-01 SX1278 433 MHz (x2):** Modulo transceptor que permitirá transmitir y recibir las señales de radio mediante las cuales, se transmitirán datos en formato csv. Este, irá conectado al Arduino, y se necesitan 2, para poder enviar y recibir datos. Las frecuencias de funcionamiento y el módulo podrían variar de acuerdo con el país y las frecuencias libres.
+Video Tutorial: https://youtu.be/uR0NHOCthcs?si=PzJw8fnk-Q3JDHxH 
+Link de Compra Amazon: https://www.amazon.com/-/es/Comimark-SX1278-alcance-inal%C3%A1mbrico-Arduino/dp/B07W6ZPH7D
+
+-	**GPS Neo6m:** Modulo GPS para poder obtener las coordenadas del dispositivo. Además, puede proveer distintos datos interesantes como la velocidad instantánea, cantidad de satélites conectados, entre otros.
+Video Tutorial: https://youtu.be/0rnZKiEsZnk?si=7-4brc8d4JG8HcgL 
+
+**Descripción del Código:**
+-	Código de Transmisión de Telemetría con LoRa: Mediante el cual, se enviarán los datos en formato csv, para ser recibidos, guardados y procesados.
+
+**Bibliotecas Utilizadas**
+1.	<util/atomic.h>: Proporciona macros para operaciones atómicas que permiten desactivar y restaurar interrupciones.
+2.	<SPI.h>: Biblioteca para comunicación SPI.
+3.	<LoRa.h>: Biblioteca para comunicación LoRa.
+4.	<SoftwareSerial.h>: Permite la comunicación serial en otros pines además de los pines seriales por defecto.
+5.	<TinyGPS.h>: Biblioteca para manejar datos GPS.
+
+Variables Globales
+•	Variables Volátiles:
+  •	mseg, t_stamp, pulsos, t_0, periodo, RPM_motor: Para medir las RPM del motor.
+  •	delta_t_llanta, t0_llanta, rpm_llanta, pulsos_llanta: Para medir las RPM de la llanta.
+  
+•	Flags:
+  •	newdata_motor, newdata_llanta: Indican si hay nuevos datos de RPM disponibles.
+  
+•	GPS:
+  •	TinyGPS gps: Objeto para manejar datos GPS.
+  
+•	SoftwareSerial ss: Comunicación serial con el módulo GPS.
+  •	latitude, longitude, speed_kmh: Datos del GPS.
+  
+•	Sensores:
+  •	I, V, voltajeSensor, Sensibilidad: Variables para medir corriente y voltaje.
+•	LoRa:
+  •	BAND: Frecuencia de operación de LoRa.
+  •	message: Mensaje a enviar.
+  
+**Configuración Inicial (setup)**
+1.	Serial: Inicializa la comunicación serial a 9600 bps para depuración.
+2.	GPS: Inicializa la comunicación serial con el módulo GPS.
+3.	Pines: Configura los pines para los sensores Hall y los sensores de corriente y voltaje.
+4.	Interrupciones:
+  •	Timer1: Configura una interrupción que se activa cada milisegundo para contar el tiempo.
+  •	Sensor Hall Motor: Configura una interrupción en el pin 2 para contar los pulsos del sensor Hall del motor.
+  •	Sensor Hall Llanta: Configura una interrupción en el pin 3 para contar los pulsos del sensor Hall de la llanta.
+5.	LoRa: Inicializa el módulo LoRa y verifica su correcto funcionamiento.
+   
+**Bucle Principal (loop)**
+1.	Medición de Corriente y Voltaje:
+  •	Llama a las funciones get_corriente() y get_voltaje() para obtener las lecturas promedio de corriente y voltaje.
+
+2.	Datos GPS:
+  •	Actualiza los datos del GPS si hay datos disponibles.
+
+3.	Transmisión de Datos:
+  •	Si hay nuevos datos de RPM del motor (newdata_motor), crea un mensaje con todos los datos y lo envía a través de LoRa.
+  •	Si no hay nuevos datos, envía un mensaje con las RPM del motor y la llanta como 0.
+
+**Interrupciones**
+  •	ISR(TIMER1_COMPA_vect): Incrementa el contador mseg cada milisegundo.
+  •	interrupcion0(): Maneja la interrupción del sensor Hall del motor para calcular las RPM del motor.
+  •	interrupcion1(): Maneja la interrupción del sensor Hall de la llanta para calcular las RPM de la llanta.
+  
+**Funciones de Medición**
+  •	get_corriente(n_muestras): Mide la corriente promedio tomando n_muestras del sensor de corriente.
+  •	get_voltaje(n_muestras): Mide el voltaje promedio tomando n_muestras del divisor de voltaje.
+
+-	**Codigo del Receptor de Telemetría con LoRa:** Este permite recibir datos de telemetría enviados a través de LoRa utilizando el Arduino de Transmisión. Los datos recibidos pueden incluir información sobre la velocidad del motor, corriente, voltaje y datos GPS, y se muestran en el monitor serial para su monitoreo y análisis.
+  
+**Bibliotecas Utilizadas**
+1.	<SPI.h>: Biblioteca para comunicación SPI.
+2.	<LoRa.h>: Biblioteca para comunicación LoRa.
+   
+**Variables Globales**
+  •	LED: Pin del LED que se puede utilizar para indicar la recepción de un mensaje.
+  •	inString: Cadena temporal para almacenar los caracteres entrantes.
+  •	message: Mensaje completo recibido.
+  •	val, rssi: Valores auxiliares para el procesamiento de datos y la intensidad de la señal recibida.
+  
+**Configuración Inicial (setup)**
+1.	Serial: Inicializa la comunicación serial a 9600 bps para depuración.
+2.	LED: Configura el pin del LED como salida.
+3.	LoRa: Inicializa el módulo LoRa y verifica su correcto funcionamiento a una frecuencia de 433 MHz (o 915 MHz, según la región).
+   
+**Bucle Principal (loop)**
+**1.	Recepción de Paquetes:**
+  •	Verifica si hay un paquete disponible utilizando LoRa.parsePacket().
+  •	Si se recibe un paquete, lee los caracteres del paquete mientras estén disponibles utilizando LoRa.available() y los almacena en inString, omitiendo los espacios.
+  
+**2.	Procesamiento del Mensaje:**
+  •	Asigna la cadena recibida a message y limpia inString para la siguiente recepción.
+  •	Obtiene la intensidad de la señal recibida (RSSI) utilizando LoRa.packetRssi().  
+  
+**3.	Salida Serial:**
+  •	Imprime el mensaje recibido en el monitor serial para su visualización.
+  
+**Ejemplo de Flujo**
+**1.	Inicialización:**
+  •	El Arduino inicializa la comunicación serial y el módulo LoRa.
+  •	Verifica si el módulo LoRa se ha inicializado correctamente.
+  
+**2.	Recepción de Datos:**
+  •	Espera paquetes de datos entrantes.
+  •	Cuando se recibe un paquete, procesa los caracteres y los almacena en una cadena.
+  
+**3.	Visualización de Datos:**
+  •	Muestra el mensaje recibido y el valor de RSSI en el monitor serial.
+
+
+**Visualización en Tiempo Real:** Para la visualización en tiempo real, se utilizó un software de código abierto realizado por farrefel, compartido en GitHub. Este, recibe los datos en formato csv, por lo cual no se debe hacer ninguna modificación al código anterior. Posteriormente, se organizan las estructuras de los datos, y permite verlos y guardarlos en tiempo real, para su posterior exportación.
+Video Tutorial: https://youtu.be/C1m6CvgjcSc?si=9Fx-rMbT3mTT6_ZV 
+
+Repositorio de GitHub TelemetryViewer: https://github.com/farrellf/TelemetryViewer/tree/master/Telemetry%20Viewer 
+
+
+
+
+
 
 
 
