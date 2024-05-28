@@ -8,6 +8,8 @@ Great Scott: https://www.youtube.com/watch?v=YV-ee8wA5lI&t=356s
 
 MOSFETs y Bootstrap (Electronoobs): https://www.youtube.com/watch?v=xUwp3TOe4m0&t=637s
 
+Drivers (Lista de reproducción con toda la información necesaria para entender el funcionamiento de estos componentes, creada por Foolish Engineer): https://www.youtube.com/watch?v=DXyTHhUjxjk&list=PLbGlpmZLQWJceSkQv96j-L4YyuxS-E0Wm
+
 Se debe entender un motor BLDC como un conjunto se rotor y estator, en el que el estator constará de un conjunto de imanes fijos, y el rotor con tres bobinados, y la rotación del mismo dependerá de las bobinas por las que ingrese y salga la corriente del sistema, es decir, del orden en que se conecten las bobinas al voltaje positivo y a tierra, respectivamente. La secuencia que se debe seguir para activar y desactivar las bobinas, dependiendo del estado de los sensores Hall, se muestra a continuación: 
 
 | ![Diagrama secuencia de encendido](https://github.com/SamuelMenco/ESC-para-motores-BLDC/assets/160543787/bce77477-9b67-424b-9b5e-ec7bd024a8d1) |
